@@ -22,11 +22,15 @@ grid = driver.find_element(By.CLASS_NAME, "ReactVirtualized__Grid__innerScrollCo
 actions = ActionChains(driver)
 
 try:
-    courses = pd.read_csv("courses.csv")
-    course_ids = set(courses["course_code"])
+    courses_comments = pd.read_csv("courses_comments.csv")
+    courses_tips = pd.read_csv("courses_tips.csv")
+    course_ids = set(courses_comments["course_code"])
 except:
-    courses = pd.DataFrame(columns=["course_code", "course_link", "course_name", "overall", "prof_rating", "difficulty",
-                                    "workload", "professors", "comments", "tips"])
+    courses_comments = pd.DataFrame(columns=["course_code", "course_link", "course_name", "overall", "prof_rating", "difficulty",
+                                    "workload", "professors", "comment"])
+    courses_tips = pd.DataFrame(
+        columns=["course_code", "course_link", "course_name", "overall", "prof_rating", "difficulty",
+                 "workload", "professors", "tip"])
     course_ids = set()
 
 previous_course_count = 0
@@ -79,16 +83,23 @@ def append_courses(count=-1):
                 course_content = accordion_body.find_element(By.CLASS_NAME, "grid-cols-2").find_elements(By.CLASS_NAME,
                                                                                                          "border")
                 course_comments = course_content[0].find_elements(By.TAG_NAME, "div")
-                new_course["comments"] = [comment.text for comment in course_comments]
+                for comment in course_comments:
+                    new_course["comment"] = comment.text
+                    courses_comments.loc[len(courses_comments)] = new_course
 
                 course_tips = course_content[1].find_elements(By.TAG_NAME, "div")
-                new_course["tips"] = [tip.text for tip in course_tips]
+                for tip in course_tips:
+                    new_course["tip"] = tip.text
+                    courses_tips.loc[len(courses_tips)] = new_course
             except:
                 print("No comments or tips found for course ", course_code)
 
             course_ids.add(course_code)
-            courses.loc[len(courses)] = new_course
-            courses.to_csv("courses.csv", index=False)
+            courses_comments.loc[len(courses_comments)] = new_course
+            courses_comments.to_csv("courses_comments.csv", index=False)
+
+            courses_tips.loc[len(courses_tips)] = new_course
+            courses_tips.to_csv("courses_tips.csv", index=False)
 
             driver.execute_script("arguments[0].click();", course_label)
             time.sleep(0.1)
@@ -101,7 +112,7 @@ while True:
     append_courses(5)
 
     # Check if the number of loaded courses has changed
-    new_courses_count = len(courses)
+    new_courses_count = len(courses_comments)
     print(f"Total courses extracted: {new_courses_count}")
 
     if new_courses_count == previous_course_count:
@@ -119,4 +130,4 @@ append_courses()
 # Close the driver
 driver.quit()
 
-print(f"Total courses extracted: {len(courses)}")
+print(f"Total courses extracted: {len(courses_comments)}")
