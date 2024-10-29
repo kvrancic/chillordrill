@@ -22,8 +22,8 @@ grid = driver.find_element(By.CLASS_NAME, "ReactVirtualized__Grid__innerScrollCo
 actions = ActionChains(driver)
 
 try:
-    courses_comments = pd.read_csv("courses_comments.csv")
-    courses_tips = pd.read_csv("courses_tips.csv")
+    courses_comments = pd.read_csv("data/courses_comments.csv")
+    courses_tips = pd.read_csv("data/courses_tips.csv")
     course_ids = set(courses_comments["course_code"])
 except:
     courses_comments = pd.DataFrame(columns=["course_code", "course_link", "course_name", "overall", "prof_rating", "difficulty",
