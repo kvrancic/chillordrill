@@ -24,6 +24,8 @@ async def get_courses(course_code: Optional[str] = None):
 
     :returns: List of courses.
     """
+    global supabase
+
     if not course_code:
         courses = get_all_courses(supabase)
         if not courses:
@@ -46,6 +48,8 @@ async def get_posts(course_code: Optional[str] = None):
 
     :returns: List of posts.
     """
+    global supabase
+
     if not course_code:
         posts = get_all_posts(supabase)
         if not posts:
@@ -72,6 +76,8 @@ async def get_summaries(course_code: Optional[str] = None):
 
     :returns: List of summaries.
     """
+    global supabase
+
     if not course_code:
         summaries = get_all_summaries(supabase)
         if not summaries:
@@ -99,6 +105,8 @@ async def answer(question: str, course_code: str):
 
     :returns: Answer to the question.
     """
+    global supabase
+
     course = get_course_by_code(supabase, course_code)
     if not course:
         raise HTTPException(status_code=404, detail=f"Course with the code {course_code} not found")
