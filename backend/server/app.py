@@ -15,6 +15,20 @@ from ai_chat.generate import generate_answer
 # Initialize FastAPI app
 app = FastAPI()
 
+load_dotenv()
+
+# Load environment variables
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+if not (SUPABASE_URL and SUPABASE_KEY):
+    raise EnvironmentError("Environment variables SUPABASE_URL, SUPABASE_KEY must be set.")
+
+# Initialize Supabase client
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+map_code_to_id = get_map_code_to_id(supabase)
+
 
 @app.get("/courses")
 async def get_courses(course_code: Optional[str] = None):
@@ -24,8 +38,6 @@ async def get_courses(course_code: Optional[str] = None):
 
     :returns: List of courses.
     """
-    global supabase
-
     if not course_code:
         courses = get_all_courses(supabase)
         if not courses:
@@ -48,8 +60,6 @@ async def get_posts(course_code: Optional[str] = None):
 
     :returns: List of posts.
     """
-    global supabase
-
     if not course_code:
         posts = get_all_posts(supabase)
         if not posts:
@@ -76,8 +86,6 @@ async def get_summaries(course_code: Optional[str] = None):
 
     :returns: List of summaries.
     """
-    global supabase
-
     if not course_code:
         summaries = get_all_summaries(supabase)
         if not summaries:
@@ -105,8 +113,6 @@ async def answer(question: str, course_code: str):
 
     :returns: Answer to the question.
     """
-    global supabase
-
     course = get_course_by_code(supabase, course_code)
     if not course:
         raise HTTPException(status_code=404, detail=f"Course with the code {course_code} not found")
@@ -121,19 +127,5 @@ async def answer(question: str, course_code: str):
 
 
 if __name__ == "__main__":
-    load_dotenv()
-
-    # Load environment variables
-    SUPABASE_URL = os.getenv("SUPABASE_URL")
-    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-    if not (SUPABASE_URL and SUPABASE_KEY):
-        raise EnvironmentError("Environment variables SUPABASE_URL, SUPABASE_KEY must be set.")
-
-    # Initialize Supabase client
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-    map_code_to_id = get_map_code_to_id(supabase)
-
     # Use this for local development
     uvicorn.run(app)
