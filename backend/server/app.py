@@ -1,11 +1,12 @@
 import json
+import os
 from typing import Optional
 import uvicorn
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from supabase import create_client, Client
-import sys
 from database_api import *
+from backend.ai_chat.generate import *
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -52,7 +53,7 @@ async def get_posts(course_code: Optional[str] = None):
     if not course_id:
         raise HTTPException(status_code=404, detail=f"No course found with the code {course_code}")
 
-    posts = get_posts_by_course_code(supabase, course_id)
+    posts = get_posts_by_course_id(supabase, course_id)
     if not posts:
         raise HTTPException(status_code=404, detail=f"No posts found for the course {course_code}")
 
@@ -78,19 +79,41 @@ async def get_summaries(course_code: Optional[str] = None):
     if not course_id:
         raise HTTPException(status_code=404, detail=f"No course found with the code {course_code}")
 
-    summaries = get_summaries_by_course_code(supabase, course_id)
+    summaries = get_summaries_by_course_id(supabase, course_id)
     if not summaries:
         raise HTTPException(status_code=404, detail=f"No summaries found for the course {course_code}")
 
     return summaries
 
 
-if __name__ == "__main__":
-    # Load environment variables
-    SUPABASE_URL = sys.argv[1]
-    SUPABASE_KEY = sys.argv[2]
+@app.post("/answer")
+async def answer(question: str, course_code: str):
+    """Generate an answer to a question using OpenAI.
 
-    # OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    :arg question: Question to generate an answer for.
+    :arg course_code: Course code to generate an answer for.
+
+    :returns: Answer to the question.
+    """
+    course = get_course_by_code(supabase, course_code)
+    if not course:
+        raise HTTPException(status_code=404, detail=f"Course with the code {course_code} not found")
+
+    course_id = course["id"]
+
+    posts = get_posts_by_course_id(supabase, course_id)
+    reviews = [post["content"] for post in posts]
+
+    answer = generate_answer(question, reviews, course["name"])
+    return {"answer": answer}
+
+
+if __name__ == "__main__":
+    load_dotenv()
+
+    # Load environment variables
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
     if not (SUPABASE_URL and SUPABASE_KEY):
         raise EnvironmentError("Environment variables SUPABASE_URL, SUPABASE_KEY must be set.")
@@ -99,9 +122,6 @@ if __name__ == "__main__":
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
     map_code_to_id = get_map_code_to_id(supabase)
-
-    # Configure OpenAI
-    # openai.api_key = OPENAI_API_KEY
 
     # Use this for local development
     uvicorn.run(app)
