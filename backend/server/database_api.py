@@ -1,0 +1,92 @@
+from supabase import Client
+
+
+def get_map_code_to_id(supabase: Client) -> dict:
+    response = (
+        supabase.table("courses")
+        .select("code", "id")
+        .execute()
+    )
+
+    return {course["code"]: course["id"] for course in response.data}
+
+
+def get_all_courses(supabase: Client) -> list:
+    response = (
+        supabase.table("courses")
+        .select("*")
+        .execute()
+    )
+
+    if len(response.data) == 0:
+        return None
+
+    return response.data
+
+
+def get_course_by_code(supabase: Client, course_code: str) -> dict:
+    response = (
+        supabase.table("courses")
+        .select("*")
+        .eq("code", course_code)
+        .execute()
+    )
+
+    if len(response.data) == 0:
+        return None
+
+    return response.data[0]
+
+
+def get_all_posts(supabase: Client) -> list:
+    response = (
+        supabase.table("posts")
+        .select("*")
+        .execute()
+    )
+
+    if len(response.data) == 0:
+        return None
+
+    return response.data
+
+
+def get_posts_by_course_id(supabase: Client, course_id: str) -> list:
+    response = (
+        supabase.table("posts")
+        .select("*")
+        .eq("course_id", course_id)
+        .execute()
+    )
+
+    if len(response.data) == 0:
+        return None
+
+    return response.data
+
+
+def get_all_summaries(supabase) -> list:
+    response = (
+        supabase.table("summaries")
+        .select("*")
+        .execute()
+    )
+
+    if len(response.data) == 0:
+        return None
+
+    return response.data
+
+
+def get_summaries_by_course_id(supabase: Client, course_id: str) -> list:
+    response = (
+        supabase.table("summaries")
+        .select("*")
+        .eq("course_id", course_id)
+        .execute()
+    )
+
+    if len(response.data) == 0:
+        return None
+
+    return response.data
