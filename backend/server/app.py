@@ -35,11 +35,6 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 class CourseQuery(BaseModel):
     course_code: int
 
-@app.get("/")
-async def root():
-    """Root endpoint to verify the API is running."""
-    return {"message": "Welcome to the Course Recommendation API!"}
-
 
 @app.get("/courses")
 async def get_courses():
@@ -50,18 +45,24 @@ async def get_courses():
         .execute()
     )
 
+    if len(response.data) == 0:
+        raise HTTPException(status_code=404, detail="No courses found")
+
     return response.data
 
 
-@app.get("/course-details")
-async def get_course_details(course_code: str):
+@app.get("/courses/{code}")
+async def get_course_details(code: str):
     """Retrieve details for a specific course."""
     response = (
         supabase.table("courses")
         .select("*")
-        .eq("code", course_code)
+        .eq("code", code)
         .execute()
     )
+
+    if len(response.data) == 0:
+        raise HTTPException(status_code=404, detail="Course not found")
 
     return response.data[0]
 
