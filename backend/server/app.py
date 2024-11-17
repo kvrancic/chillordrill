@@ -2,11 +2,15 @@ import json
 import os
 from typing import Optional
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from supabase import create_client, Client
 from database_api import *
-from backend.ai_chat.generate import *
+
+import sys
+sys.path.append("..")
+from ai_chat.generate import generate_answer
 
 # Initialize FastAPI app
 app = FastAPI()
