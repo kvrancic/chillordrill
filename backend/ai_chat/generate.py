@@ -38,7 +38,7 @@ def get_prompt(question: str, reviews: list[tuple[str, str]], course_name: str) 
 def generate_model_response(client: OpenAI, prompt: str) -> str:
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "user",
