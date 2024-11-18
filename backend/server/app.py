@@ -15,11 +15,11 @@ from ai_chat.generate import generate_answer
 # Initialize FastAPI app
 app = FastAPI()
 
-SUPABASE_URL = None
-SUPABASE_KEY = None
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-if load_dotenv(find_dotenv()):
-    # Load environment variables
+if not SUPABASE_URL or not SUPABASE_KEY:
+    load_dotenv(override=True)
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
