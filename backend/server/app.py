@@ -15,8 +15,6 @@ from ai_chat.generate import generate_answer
 # Initialize FastAPI app
 app = FastAPI()
 
-load_dotenv()
-
 SUPABASE_URL = None
 SUPABASE_KEY = None
 
