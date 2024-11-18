@@ -34,12 +34,14 @@ map_code_to_id = get_map_code_to_id(supabase)
 
 @app.get("/courses")
 async def get_courses(course_code: Optional[str] = None):
-    """Retrieve all courses from the Supabase database.
-
-    :arg course_code: Optional course code to filter courses by.
-
-    :returns: List of courses.
     """
+    Retrieve courses from the database.
+
+    - **course_code**: Optional course code to filter courses by.
+    - **returns**: List of courses or a specific course if course_code is provided.
+    - **raises**: HTTPException with status code 404 if no courses or the specific course is found.
+    """
+
     if not course_code:
         courses = get_all_courses(supabase)
         if not courses:
@@ -56,11 +58,12 @@ async def get_courses(course_code: Optional[str] = None):
 
 @app.get("/posts")
 async def get_posts(course_code: Optional[str] = None):
-    """Retrieve all posts.
+    """
+    Retrieve posts from the database.
 
-    :arg course_code: Optional course code to filter posts by.
-
-    :returns: List of posts.
+    - **course_code**: Optional course code to filter posts by.
+    - **returns**: List of posts or posts filtered by course_code.
+    - **raises**: HTTPException with status code 404 if no posts or the specific posts are found.
     """
     if not course_code:
         posts = get_all_posts(supabase)
@@ -82,11 +85,12 @@ async def get_posts(course_code: Optional[str] = None):
 
 @app.get("/summaries")
 async def get_summaries(course_code: Optional[str] = None):
-    """Retrieve all summaries.
+    """
+    Retrieve summaries from the database.
 
-    :arg course_code: Optional course code to filter summaries by.
-
-    :returns: List of summaries.
+    - **course_code**: Optional course code to filter summaries by.
+    - **returns**: List of summaries or summaries filtered by course_code.
+    - **raises**: HTTPException with status code 404 if no summaries or the specific summaries are found.
     """
     if not course_code:
         summaries = get_all_summaries(supabase)
@@ -108,12 +112,13 @@ async def get_summaries(course_code: Optional[str] = None):
 
 @app.get("/answer")
 async def answer(question: str, course_code: str):
-    """Generate an answer to a question using OpenAI.
+    """
+    Generate an answer to a question using OpenAI.
 
-    :arg question: Question to generate an answer for.
-    :arg course_code: Course code to generate an answer for.
-
-    :returns: Answer to the question.
+    - **question**: Question to generate an answer for.
+    - **course_code**: Course code to generate an answer for.
+    - **returns**: Answer to the question.
+    - **raises**: HTTPException with status code 404 if the course or posts are not found.
     """
     course = get_course_by_code(supabase, course_code)
     if not course:
