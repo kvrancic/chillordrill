@@ -106,7 +106,7 @@ async def get_summaries(course_code: Optional[str] = None):
     return summaries
 
 
-@app.post("/answer")
+@app.get("/answer")
 async def answer(question: str, course_code: str):
     """Generate an answer to a question using OpenAI.
 
