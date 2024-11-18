@@ -58,11 +58,11 @@ def generate_answer(question: str, reviews: list[tuple[str, str]], course_name: 
     """
     Generate an answer to a question based on the reviews of a course.
         question: The question to answer.
-        reviews: A list of tuples, where each tuple is in the form (ai_question, review_text); 
-            the first element is empty of the review was not an answer to the question. 
+        reviews: A list of tuples, where each tuple is in the form (ai_question, review_text);
+            the first element is empty of the review was not an answer to the question.
             Otherwise, if the reviews is the result of a student answering the question provided by AI, the first element is this question.
         course_name: The name of the course.
     """
     client = get_client()
-    prompt = get_prompt(question, reviews, course_name)
+    prompt = get_prompt(course_name, question, reviews)
     return generate_model_response(client, prompt)

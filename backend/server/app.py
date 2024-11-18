@@ -2,7 +2,7 @@ import json
 import os
 from typing import Optional
 import uvicorn
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from supabase import create_client, Client
@@ -18,7 +18,7 @@ app = FastAPI()
 SUPABASE_URL = None
 SUPABASE_KEY = None
 
-if load_dotenv():
+if load_dotenv(find_dotenv()):
     # Load environment variables
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
