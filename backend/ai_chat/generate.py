@@ -4,7 +4,7 @@ from openai import OpenAI, OpenAIError
 
 def get_client() -> OpenAI:
     api_key = None
-    if load_dotenv():
+    if load_dotenv(find_dotenv()):
         api_key = os.getenv("OPENAI_API_KEY")
 
     if api_key is None or api_key == "":
