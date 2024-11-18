@@ -17,9 +17,13 @@ app = FastAPI()
 
 load_dotenv()
 
-# Load environment variables
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = None
+SUPABASE_KEY = None
+
+if load_dotenv():
+    # Load environment variables
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 if not (SUPABASE_URL and SUPABASE_KEY):
     raise EnvironmentError("Environment variables SUPABASE_URL, SUPABASE_KEY must be set.")
