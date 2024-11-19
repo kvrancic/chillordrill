@@ -136,7 +136,6 @@ def main():
 
     for course in tqdm(courses):
         process_course(course, posts, ai_questions, openai_client, supabase, args.num_questions)
-        break
             
 
 if __name__ == "__main__":
