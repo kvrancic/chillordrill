@@ -42,7 +42,7 @@ def generate_model_response(client: OpenAI, prompt: str) -> str:
         )
         return response.choices[0].message.content.strip()
     except OpenAIError as e:
-        return f"An error occurred while processing the reviews: {str(e)}"  
+        return f"An error occurred while processing the reviews: {str(e)}"
     
 def generate_answer(question: str, reviews: list[str], course_name: str) -> str:
     client = get_client()
