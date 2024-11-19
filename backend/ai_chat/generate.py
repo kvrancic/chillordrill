@@ -19,7 +19,9 @@ def get_client() -> OpenAI:
     return client
 
 def get_prompt(course_name: str, question: str, reviews: list[str]) -> str:
-    with open("prompt.txt", "r") as file:
+    file_path = os.path.join(os.path.dirname(__file__), "prompt.txt")
+
+    with open(file_path, "r") as file:
         prompt = file.read()
     prompt = prompt.replace("{course_name}", course_name)
     prompt = prompt.replace("{question}", question)
