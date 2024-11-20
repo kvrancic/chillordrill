@@ -110,7 +110,7 @@ async def get_summaries(course_code: Optional[str] = None):
     return summaries
 
 
-@app.get("/answer")
+@app.post("/answer")
 async def answer(question: str, course_code: str):
     """
     Generate an answer to a question using OpenAI.
@@ -130,6 +130,9 @@ async def answer(question: str, course_code: str):
     reviews = [post["content"] for post in posts]
 
     answer = generate_answer(question, reviews, course["name"])
+
+    save_interaction(supabase, None, course_id, question, answer)
+
     return {"answer": answer}
 
 
