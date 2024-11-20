@@ -24,7 +24,7 @@ def get_all_courses(supabase: Client) -> list:
     return response.data
 
 
-def get_course_by_code(supabase: Client, course_code: str) -> dict:
+def get_course_by_code(supabase: Client, course_code) -> dict:
     response = (
         supabase.table("courses")
         .select("*")
@@ -51,7 +51,7 @@ def get_all_posts(supabase: Client) -> list:
     return response.data
 
 
-def get_posts_by_course_id(supabase: Client, course_id: str) -> list:
+def get_posts_by_course_id(supabase: Client, course_id) -> list:
     response = (
         supabase.table("posts")
         .select("*")
@@ -78,7 +78,7 @@ def get_all_summaries(supabase) -> list:
     return response.data
 
 
-def get_summaries_by_course_id(supabase: Client, course_id: str) -> list:
+def get_summaries_by_course_id(supabase: Client, course_id) -> list:
     response = (
         supabase.table("summaries")
         .select("*")
@@ -90,3 +90,18 @@ def get_summaries_by_course_id(supabase: Client, course_id: str) -> list:
         return None
 
     return response.data
+
+
+def save_interaction(supabase: Client, user_id, course_id, question, answer):
+    response = (
+        supabase.table("chatbot_interactions")
+        .insert(
+            {
+                "user_id": user_id,
+                "course_id": course_id,
+                "question": question,
+                "answer": answer
+            }
+        )
+        .execute()
+    )
