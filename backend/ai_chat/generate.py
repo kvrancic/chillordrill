@@ -18,7 +18,7 @@ def get_client() -> OpenAI:
     )
     return client
 
-def get_prompt(question: str, reviews: list[str], course_name: str) -> str:
+def get_prompt(question: str, reviews: list[tuple[str, str]], course_name: str) -> str:
     file_path = os.path.join(os.path.dirname(__file__), "prompt.txt")
 
     with open(file_path, "r") as file:
