@@ -18,14 +18,20 @@ def get_client() -> OpenAI:
     )
     return client
 
-def get_prompt(course_name: str, question: str, reviews: list[str]) -> str:
+def get_prompt(question: str, reviews: list[str], course_name: str) -> str:
     file_path = os.path.join(os.path.dirname(__file__), "prompt.txt")
 
     with open(file_path, "r") as file:
         prompt = file.read()
     prompt = prompt.replace("{course_name}", course_name)
     prompt = prompt.replace("{question}", question)
-    formatted_reviews = "\n".join(f"- {review}" for review in reviews)
+    formatted_reviews = []
+    for review in reviews:
+        if review[0] == "":
+            formatted_reviews.append(f"- {review[1]}")
+        else:
+            formatted_reviews.append(f"- Question: \"{review[0]}\" Answer: \"{review[1]}\"")
+    formatted_reviews = "\n".join(formatted_reviews)
     prompt = prompt.replace("{reviews}", formatted_reviews)
     return prompt
 
@@ -46,7 +52,15 @@ def generate_model_response(client: OpenAI, prompt: str) -> str:
     except OpenAIError as e:
         return f"An error occurred while processing the reviews: {str(e)}"
     
-def generate_answer(question: str, reviews: list[str], course_name: str) -> str:
+def generate_answer(question: str, reviews: list[tuple[str, str]], course_name: str) -> str:
+    """
+    Generate an answer to a question based on the reviews of a course.
+        question: The question to answer.
+        reviews: A list of tuples, where each tuple is in the form (ai_question, review_text); 
+            the first element is empty of the review was not an answer to the question. 
+            Otherwise, if the reviews is the result of a student answering the question provided by AI, the first element is this question.
+        course_name: The name of the course.
+    """
     client = get_client()
-    prompt = get_prompt(course_name, question, reviews)
+    prompt = get_prompt(question, reviews, course_name)
     return generate_model_response(client, prompt)
