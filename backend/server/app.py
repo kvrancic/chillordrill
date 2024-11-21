@@ -126,9 +126,16 @@ async def ai_interaction(user_id: Optional[str] = None, course_code: str = "", q
     course_id = course["id"]
 
     posts = get_posts_by_course_id(supabase, course_id)
-    reviews = [post["content"] for post in posts]
 
-    reviews = [("", review) for review in reviews]
+    if not posts:
+        raise HTTPException(status_code=404, detail=f"No posts found for the course {course_code}")
+
+    reviews = []
+    for post in posts:
+        if post["ai_questions"]:
+            reviews.append((post["ai_questions"]["question_text"], post["content"]))
+        else:
+            reviews.append(("", post["content"]))
 
     answer = generate_answer(question, reviews, course["name"])
 
