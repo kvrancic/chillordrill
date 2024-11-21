@@ -41,7 +41,6 @@ async def get_courses(course_code: Optional[str] = None):
     - **returns**: List of courses or a specific course if course_code is provided.
     - **raises**: HTTPException with status code 404 if no courses or the specific course is found.
     """
-
     if not course_code:
         courses = get_all_courses(supabase)
         if not courses:
@@ -110,8 +109,8 @@ async def get_summaries(course_code: Optional[str] = None):
     return summaries
 
 
-@app.post("/answer")
-async def answer(question: str, course_code: str):
+@app.post("/ai_interaction")
+async def ai_interaction(user_id: Optional[str] = None, course_code: str = "", question: str = ""):
     """
     Generate an answer to a question using OpenAI.
 
@@ -131,7 +130,7 @@ async def answer(question: str, course_code: str):
 
     answer = generate_answer(question, reviews, course["name"])
 
-    save_interaction(supabase, None, course_id, question, answer)
+    save_interaction(supabase, user_id, course_id, question, answer)
 
     return {"answer": answer}
 
