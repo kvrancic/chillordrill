@@ -41,7 +41,7 @@ def get_course_by_code(supabase: Client, course_code):
 def get_all_posts(supabase: Client):
     response = (
         supabase.table("posts")
-        .select("*, ai_questions!left(question_text)")
+        .select("*, ai_questions(question_text)")
         .execute()
     )
 
@@ -54,7 +54,7 @@ def get_all_posts(supabase: Client):
 def get_posts_by_course_id(supabase: Client, course_id):
     response = (
         supabase.table("posts")
-        .select("*, ai_questions!left(question_text)")
+        .select("*, ai_questions(question_text)")
         .eq("course_id", course_id)
         .execute()
     )
