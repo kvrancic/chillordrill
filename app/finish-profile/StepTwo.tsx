@@ -20,7 +20,6 @@ export default function StepTwo({ nextStep, prevStep, currentCourses, setCurrent
       <CustomMultiSelect
         selectedValues={currentCourses}
         setSelectedValues={setCurrentCourses}
-        placeholder="Select courses you're currently taking..."
       />
       <div className="flex justify-between mt-4">
         <Button variant="outline" color="red" onClick={prevStep}>

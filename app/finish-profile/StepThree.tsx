@@ -28,7 +28,6 @@ export default function StepThree({ prevStep, pastCourses, setPastCourses, handl
       <CustomMultiSelect
         selectedValues={pastCourses}
         setSelectedValues={setPastCourses}
-        placeholder="Select courses you've taken..."
       />
       <div className="flex justify-between mt-4">
         <Button variant="outline" color="red" onClick={prevStep}>
