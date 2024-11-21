@@ -11,7 +11,7 @@ def get_map_code_to_id(supabase: Client) -> dict:
     return {course["code"]: course["id"] for course in response.data}
 
 
-def get_all_courses(supabase: Client) -> list:
+def get_all_courses(supabase: Client):
     response = (
         supabase.table("courses")
         .select("*")
@@ -24,7 +24,7 @@ def get_all_courses(supabase: Client) -> list:
     return response.data
 
 
-def get_course_by_code(supabase: Client, course_code) -> dict:
+def get_course_by_code(supabase: Client, course_code):
     response = (
         supabase.table("courses")
         .select("*")
@@ -38,7 +38,7 @@ def get_course_by_code(supabase: Client, course_code) -> dict:
     return response.data[0]
 
 
-def get_all_posts(supabase: Client) -> list:
+def get_all_posts(supabase: Client):
     response = (
         supabase.table("posts")
         .select("*")
@@ -51,7 +51,7 @@ def get_all_posts(supabase: Client) -> list:
     return response.data
 
 
-def get_posts_by_course_id(supabase: Client, course_id) -> list:
+def get_posts_by_course_id(supabase: Client, course_id):
     response = (
         supabase.table("posts")
         .select("*")
@@ -65,7 +65,7 @@ def get_posts_by_course_id(supabase: Client, course_id) -> list:
     return response.data
 
 
-def get_all_summaries(supabase) -> list:
+def get_all_summaries(supabase):
     response = (
         supabase.table("summaries")
         .select("*")
@@ -78,7 +78,7 @@ def get_all_summaries(supabase) -> list:
     return response.data
 
 
-def get_summaries_by_course_id(supabase: Client, course_id) -> list:
+def get_summaries_by_course_id(supabase: Client, course_id):
     response = (
         supabase.table("summaries")
         .select("*")

@@ -128,6 +128,8 @@ async def ai_interaction(user_id: Optional[str] = None, course_code: str = "", q
     posts = get_posts_by_course_id(supabase, course_id)
     reviews = [post["content"] for post in posts]
 
+    reviews = [("", review) for review in reviews]
+
     answer = generate_answer(question, reviews, course["name"])
 
     save_interaction(supabase, user_id, course_id, question, answer)

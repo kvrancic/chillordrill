@@ -64,5 +64,5 @@ def generate_answer(question: str, reviews: list[tuple[str, str]], course_name: 
         course_name: The name of the course.
     """
     client = get_client()
-    prompt = get_prompt(course_name, question, reviews)
+    prompt = get_prompt(question, reviews, course_name)
     return generate_model_response(client, prompt)
