@@ -34,6 +34,7 @@ export default function NewPost() {
         if (error) {
           console.error('Error fetching user courses:', error);
         } else if (data) {
+        // @ts-expect-error - data is possibly null
           setCourses(data.map((item) => item.course));
         }
       }

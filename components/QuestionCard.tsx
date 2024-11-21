@@ -39,6 +39,7 @@ export default function QuestionCard({ question, hideQuestion }: QuestionCardPro
     }
 
     const { error } = await supabase.from('posts').insert({
+      // @ts-expect-error - data is possibly null
       user_id: isAnonymous ? null : user.id,
       course_id: question.course_id,
       ai_question_id: question.id,

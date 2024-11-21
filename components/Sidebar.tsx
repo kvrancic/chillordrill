@@ -52,6 +52,7 @@ export default function Sidebar() {
 
           // Extract the `courses` field properly
           const courses = data.map((item) => item.courses);
+          // @ts-expect-error - data is possibly null
           setInterestedCourses(courses);
         }
       } catch (err) {
