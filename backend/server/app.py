@@ -143,7 +143,7 @@ async def ai_interaction(interaction: Interaction):
 
     answer = generate_answer(interaction.question, reviews, course["name"])
 
-    save_interaction(supabase, interaction.user_id, course_id, interaction.question, answer)
+    # save_interaction(supabase, interaction.user_id, course_id, interaction.question, answer)
 
     return {"answer": answer}
 
