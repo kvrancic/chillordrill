@@ -16,14 +16,21 @@ export default function CoursePage() {
   const [summaries, setSummaries] = useState([]);
   const [showInfo, setShowInfo] = useState(true);
 
+  // New state variables for user course status
+  const [isInterested, setIsInterested] = useState(false);
+  const [hasTaken, setHasTaken] = useState(false);
+
+  // Fetch course data
   useEffect(() => {
     const fetchCourseWithSummaries = async () => {
       const { data, error } = await supabase
         .from('courses')
-        .select(`
+        .select(
+          `
           *,
           summaries (id, text, created_at)
-        `)
+        `
+        )
         .eq('code', courseId)
         .single();
 
@@ -37,6 +44,114 @@ export default function CoursePage() {
 
     fetchCourseWithSummaries();
   }, [courseId, supabase]);
+
+  // Fetch user course status
+  useEffect(() => {
+    const fetchUserCourseStatus = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user && course) {
+        const { data, error } = await supabase
+          .from('user_courses')
+          .select('status')
+          .eq('user_id', user.id)
+          .eq('course_id', course.id);
+
+        if (error) {
+          console.error('Error fetching user course status:', error);
+        } else if (data) {
+          setIsInterested(data.some((item) => item.status === 'interested'));
+          setHasTaken(data.some((item) => item.status === 'taken' || item.status === 'taking'));
+        }
+      }
+    };
+
+    fetchUserCourseStatus();
+  }, [course, supabase]);
+
+  // Handle interest toggle
+  const handleInterestToggle = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert('You must be logged in to perform this action.');
+      return;
+    }
+
+    if (isInterested) {
+      // Remove 'interested' status
+      const { error } = await supabase
+        .from('user_courses')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('course_id', course.id)
+        .eq('status', 'interested');
+
+      if (error) {
+        console.error('Error removing interest:', error);
+      } else {
+        setIsInterested(false);
+      }
+    } else {
+      // Add 'interested' status
+      const { error } = await supabase.from('user_courses').insert({
+        user_id: user.id,
+        course_id: course.id,
+        status: 'interested',
+      });
+
+      if (error) {
+        console.error('Error adding interest:', error);
+      } else {
+        setIsInterested(true);
+      }
+    }
+  };
+
+  // Handle taken/taking toggle
+  const handleTakenToggle = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert('You must be logged in to perform this action.');
+      return;
+    }
+
+    if (hasTaken) {
+      // Remove 'taken' status
+      const { error } = await supabase
+        .from('user_courses')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('course_id', course.id)
+        .in('status', ['taken', 'taking']);
+
+      if (error) {
+        console.error('Error removing taken status:', error);
+      } else {
+        setHasTaken(false);
+      }
+    } else {
+      // Add 'taken' status
+      const { error } = await supabase.from('user_courses').insert({
+        user_id: user.id,
+        course_id: course.id,
+        status: 'taken', // You can change this to 'taking' if needed
+      });
+
+      if (error) {
+        console.error('Error adding taken status:', error);
+      } else {
+        setHasTaken(true);
+      }
+    }
+  };
 
   if (!course) {
     return <div>Loading...</div>;
@@ -54,12 +169,33 @@ export default function CoursePage() {
         {/* Course Header */}
         <div className="mb-4">
           <h1 className="text-3xl font-bold">{course.name}</h1>
-          <button
-            onClick={() => setShowInfo(!showInfo)}
-            className="mt-2 text-sm text-blue-500 hover:underline"
-          >
-            {showInfo ? 'Hide Info' : 'Show Info'}
-          </button>
+
+          {/* Buttons for course status */}
+          <div className="flex items-center mt-2 space-x-4">
+            <button
+              onClick={handleInterestToggle}
+              className={`px-4 py-2 rounded ${
+                isInterested ? 'bg-green-500' : 'bg-gray-700'
+              } hover:bg-green-600 text-white`}
+            >
+              {isInterested ? 'Interested' : "I'm interested in this course"}
+            </button>
+            <button
+              onClick={handleTakenToggle}
+              className={`px-4 py-2 rounded ${
+                hasTaken ? 'bg-green-500' : 'bg-gray-700'
+              } hover:bg-green-600 text-white`}
+            >
+              {hasTaken ? 'Taken/Taking' : 'I have taken/am taking this course'}
+            </button>
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="text-sm text-blue-500 hover:underline"
+            >
+              {showInfo ? 'Hide Info' : 'Show Info'}
+            </button>
+          </div>
+
           {showInfo && (
             <div className="mt-2 bg-darkblue p-4 rounded">
               <p>

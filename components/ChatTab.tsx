@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/utils/supabase/client'
 import axios from 'axios';
 import { Skeleton } from '@mantine/core';
 
@@ -13,7 +13,7 @@ interface ChatMessage {
 
 //@ts-expect-error - data is possibly null 
 export default function ChatTab({ course }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
