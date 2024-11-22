@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client'
 import { AiOutlineUp, AiOutlineDown } from 'react-icons/ai';
+import { Switch } from '@mantine/core';
 
 export default function CommentSection({ postId }) {
   const supabase = createClient();
@@ -208,24 +209,20 @@ export default function CommentSection({ postId }) {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
         ></textarea>
-        <div className="flex items-center mb-2">
-          <input
-            type="checkbox"
-            id={`anonymous-comment`}
-            checked={isAnonymous}
-            onChange={(e) => setIsAnonymous(e.target.checked)}
-            className="mr-2"
-          />
-          <label htmlFor={`anonymous-comment`} className="text-white">
-            Comment anonymously
-          </label>
-        </div>
+        <div className='flex flex-end gap-6'>
+        <Switch
+                checked={isAnonymous}
+                onChange={(event) => setIsAnonymous(event.currentTarget.checked)}
+                label="anonymous"
+                color="green"
+            />
         <button
           onClick={handleCommentSubmit}
           className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded"
         >
           Submit
         </button>
+        </div>
       </div>
       {/* Comments List */}
       {comments.map((comment) => (

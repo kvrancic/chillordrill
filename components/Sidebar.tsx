@@ -88,7 +88,7 @@ export default function Sidebar() {
   }, [searchValue, supabase]);
 
   return (
-    <div className='bg-gray-800 h-full pt-10'>
+    <div className='bg-gray-900 h-full pt-10'>
       {/* Mobile Toggle Button */}
       <div className="md:hidden p-4">
         <button

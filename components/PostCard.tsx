@@ -103,7 +103,7 @@ export default function PostCard({ post }) {
   };
 
   return (
-    <div className="bg-darkblue p-4 rounded mb-4">
+    <div className="bg-darkblue p-4 rounded mb-4 ">
       {/* Post Header */}
       <div className="flex items-center mb-2">
         <div className="flex items-center">

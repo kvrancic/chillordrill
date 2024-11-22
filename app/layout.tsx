@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { MantineProvider } from "@mantine/core";
+import '@mantine/core/styles.css';
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

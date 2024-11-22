@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client'
+import { Switch } from '@mantine/core';
 
 interface Course {
   id: string;
@@ -80,7 +81,7 @@ export default function NewPost() {
   };
 
   return (
-    <div className="bg-darkblue p-4 rounded mb-4">
+    <div className="bg-darkblue p-4 rounded-lg mb-4 bg-gray-900">
       <h2 className="text-xl font-bold text-white mb-2">Create a New Post</h2>
       <textarea
         className="w-full p-2 bg-black text-white border border-gray-600 rounded mb-2"
@@ -88,7 +89,8 @@ export default function NewPost() {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       ></textarea>
-      <div className="flex items-center mb-2">
+      <div className="flex mb-2 justify-between">
+        <div className='flex items-center'>
         <label className="text-white mr-2">Course:</label>
         <select
           className="p-2 bg-black text-white border border-gray-600 rounded"
@@ -102,25 +104,22 @@ export default function NewPost() {
             </option>
           ))}
         </select>
+        </div>
+      <div className='flex items-center gap-6 flex-end'>
+        <Switch
+                checked={isAnonymous}
+                onChange={(event) => setIsAnonymous(event.currentTarget.checked)}
+                label="anonymous"
+                color="green"
+            />
+        <button
+            onClick={handleSubmit}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+        >
+            Post
+        </button>
       </div>
-      <div className="flex items-center mb-2">
-        <input
-          type="checkbox"
-          id="anonymous"
-          checked={isAnonymous}
-          onChange={(e) => setIsAnonymous(e.target.checked)}
-          className="mr-2"
-        />
-        <label htmlFor="anonymous" className="text-white">
-          Post anonymously
-        </label>
       </div>
-      <button
-        onClick={handleSubmit}
-        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-      >
-        Post
-      </button>
     </div>
   );
 }
