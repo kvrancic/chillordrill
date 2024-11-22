@@ -16,7 +16,7 @@ export default function SignInForm() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
-        router.push("/home");
+        router.push("/");
       }
     });
 
@@ -24,7 +24,7 @@ export default function SignInForm() {
   });
 
   return (
-    <div className="w-11/12 p-12 px-6 py-10 rounded-lg sm:w-9/12 md:w-8/12 lg:w-7/12 2xl:w-5/12 sm:px-10 sm:py-6 shadow-2xl text-white">
+    <div className="w-11/12 p-12 px-6 py-10 rounded-lg sm:w-9/12 md:w-8/12 lg:w-7/12 2xl:w-5/12 sm:px-10 sm:py-6 shadow-2xl bg-white">
       <h2 className="font-semibold text-4xl mb-4">Sign in</h2>
       <p className="font-medium mb-4">Hi, Welcome back</p>
       <SignIn
