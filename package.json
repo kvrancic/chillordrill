@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
+    "@headlessui/react": "^2.2.0",
     "@mantine/core": "^7.14.1",
     "@mantine/hooks": "^7.14.1",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
@@ -17,6 +18,7 @@
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.6",
     "@tabler/icons-react": "^3.22.0",
+    "axios": "^1.7.7",
     "next": "15.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
