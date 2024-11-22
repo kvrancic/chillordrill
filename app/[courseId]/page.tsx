@@ -43,7 +43,7 @@ export default function CoursePage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
       <div className="hidden md:block">
         <Sidebar />

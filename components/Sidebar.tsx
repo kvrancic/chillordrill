@@ -88,7 +88,7 @@ export default function Sidebar() {
   }, [searchValue, supabase]);
 
   return (
-    <>
+    <div className='bg-gray-800 h-full pt-10'>
       {/* Mobile Toggle Button */}
       <div className="md:hidden p-4">
         <button
@@ -106,9 +106,9 @@ export default function Sidebar() {
         }`}
       >
         {/* Interested Courses */}
-        <div className="mb-6">
-          <h2 className="text-xl font-bold mb-2">Interested Courses</h2>
-          <div className="space-y-2 max-h-40 overflow-y-auto">
+        <div className="mb-6 min-h-1/2">
+          <h2 className="text-xl font-bold mb-2">Course Watchlist</h2>
+          <div className="space-y-2 max-h-[36vh] overflow-y-auto">
             {interestedCourses.map((course) => (
               <Link
                 key={course.id}
@@ -122,7 +122,7 @@ export default function Sidebar() {
         </div>
 
         {/* All Courses */}
-        <div>
+        <div className='h-1/2'>
           <h2 className="text-xl font-bold mb-2">All Courses</h2>
           <input
             type="text"
@@ -131,7 +131,7 @@ export default function Sidebar() {
             onChange={(e) => setSearchValue(e.target.value)}
             className="w-full p-2 mb-2 bg-black text-white border border-gray-600 rounded"
           />
-          <div className="space-y-2 max-h-64 overflow-y-auto">
+          <div className="space-y-2 max-h-[36vh] overflow-y-auto">
             {allCourses.map((course) => (
               <Link
                 key={course.id}
@@ -144,6 +144,6 @@ export default function Sidebar() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
