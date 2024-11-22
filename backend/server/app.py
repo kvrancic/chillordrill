@@ -4,6 +4,7 @@ from typing import Optional
 import uvicorn
 from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from supabase import create_client, Client
 from database_api import *
@@ -14,6 +15,16 @@ from ai_chat.generate import generate_answer
 
 # Initialize FastAPI app
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
