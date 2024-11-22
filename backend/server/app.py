@@ -109,26 +109,30 @@ async def get_summaries(course_code: Optional[str] = None):
     return summaries
 
 
+class Interaction(BaseModel):
+    user_id: Optional[str] = None
+    course_code: str
+    question: str
+
 @app.post("/ai_interaction")
-async def ai_interaction(user_id: Optional[str] = None, course_code: str = "", question: str = ""):
+async def ai_interaction(interaction: Interaction):
     """
     Generate an answer to a question using OpenAI.
 
-    - **question**: Question to generate an answer for.
-    - **course_code**: Course code to generate an answer for.
+    - **interaction**: Interaction object containing user_id, course_code, and question.
     - **returns**: Answer to the question.
-    - **raises**: HTTPException with status code 404 if the course or posts are not found.
+    - **raises**: HTTPException with status code 404 if course or posts are not found.
     """
-    course = get_course_by_code(supabase, course_code)
+    course = get_course_by_code(supabase, interaction.course_code)
     if not course:
-        raise HTTPException(status_code=404, detail=f"Course with the code {course_code} not found")
+        raise HTTPException(status_code=404, detail=f"Course with the code {interaction.course_code} not found")
 
     course_id = course["id"]
 
     posts = get_posts_by_course_id(supabase, course_id)
 
     if not posts:
-        raise HTTPException(status_code=404, detail=f"No posts found for the course {course_code}")
+        raise HTTPException(status_code=404, detail=f"No posts found for the course {interaction.course_code}")
 
     reviews = []
     for post in posts:
@@ -137,9 +141,9 @@ async def ai_interaction(user_id: Optional[str] = None, course_code: str = "", q
         else:
             reviews.append(("", post["content"]))
 
-    answer = generate_answer(question, reviews, course["name"])
+    answer = generate_answer(interaction.question, reviews, course["name"])
 
-    save_interaction(supabase, user_id, course_id, question, answer)
+    save_interaction(supabase, interaction.user_id, course_id, interaction.question, answer)
 
     return {"answer": answer}
 
