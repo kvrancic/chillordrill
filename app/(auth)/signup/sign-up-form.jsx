@@ -9,7 +9,7 @@ export default function SignUpForm() {
   const supabase = createClient();
 
   return (
-    <div className="w-11/12 p-6 sm:p-10 rounded-lg sm:w-8/12 shadow-2xl">
+    <div className="w-11/12 p-6 sm:p-10 rounded-lg sm:w-8/12 shadow-2xl text-white">
       <h2 className="font-semibold text-4xl mb-4">Create an Account</h2>
       <p className="font-medium mb-6">Let&apos;s get started</p>
       <SignUp

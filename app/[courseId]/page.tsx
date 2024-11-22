@@ -168,10 +168,10 @@ export default function CoursePage() {
       <div className="flex-1 p-4">
         {/* Course Header */}
         <div className="mb-4">
-          <h1 className="text-3xl font-bold">{course.name}</h1>
 
           {/* Buttons for course status */}
           <div className="flex items-center mt-2 space-x-4">
+            <h1 className="text-3xl font-bold">{course.name}</h1>
             <button
               onClick={handleInterestToggle}
               className={`px-4 py-2 rounded ${
@@ -188,13 +188,16 @@ export default function CoursePage() {
             >
               {hasTaken ? 'Taken/Taking' : 'I have taken/am taking this course'}
             </button>
-            <button
-              onClick={() => setShowInfo(!showInfo)}
-              className="text-sm text-blue-500 hover:underline"
-            >
-              {showInfo ? 'Hide Info' : 'Show Info'}
-            </button>
+            
           </div>
+
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            className="text-xl text-blue-500 hover:underline bg-transparent border-none focus:outline-none ml-[-18px]"
+          >
+            {showInfo ? 'Hide Info' : 'Show Info'}
+          </button>
+
 
           {showInfo && (
             <div className="mt-2 bg-darkblue p-4 rounded">
@@ -242,7 +245,7 @@ export default function CoursePage() {
 
         {/* Tabs */}
         <Tab.Group>
-          <Tab.List className="flex space-x-1 bg-darkblue p-1 rounded">
+          <Tab.List className="flex space-x-1 bg-darkblue p-1 rounded items-center justify-center">
             <Tab
               className={({ selected }) =>
                 selected
