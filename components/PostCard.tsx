@@ -22,19 +22,21 @@ export default function PostCard({ post }) {
       } = await supabase.auth.getUser();
 
       // Fetch total score
-      const { data: votesData, error: votesError } = await supabase
-        .from('votes')
-        .select('vote_type')
-        .eq('post_id', post.id);
+      setScore(post.score);
 
-      if (votesError) {
-        console.error('Error fetching votes:', votesError);
-      } else {
-        const totalScore = votesData.reduce((acc, vote) => {
-          return acc + (vote.vote_type === 'upvote' ? 1 : -1);
-        }, 0);
-        setScore(totalScore);
-      }
+      // const { data: votesData, error: votesError } = await supabase
+      //   .from('votes')
+      //   .select('vote_type')
+      //   .eq('post_id', post.id);
+      //
+      // if (votesError) {
+      //   console.error('Error fetching votes:', votesError);
+      // } else {
+      //   const totalScore = votesData.reduce((acc, vote) => {
+      //     return acc + (vote.vote_type === 'upvote' ? 1 : -1);
+      //   }, 0);
+      //   setScore(totalScore);
+      // }
 
       // Set post creator
       if (!post.is_anonymous && post.profiles.username) {
@@ -73,6 +75,8 @@ export default function PostCard({ post }) {
       return;
     }
 
+    let newScore = post.score;
+
     if (userVote === voteType) {
       // Remove vote
       const { error: deleteError } = await supabase
@@ -85,25 +89,76 @@ export default function PostCard({ post }) {
         console.error('Error removing vote:', deleteError);
       } else {
         setUserVote(null);
-        setScore((prev) => prev + (voteType === 'upvote' ? -1 : 1));
+
+        newScore += (voteType === 'upvote' ? -1 : 1);
+        setScore(() => newScore);
+
+        const { error: scoreUpdateError} = await supabase
+          .from('posts')
+          .update({ score: newScore })
+          .eq('id', post.id);
+
+        if (scoreUpdateError) {
+            console.error('Error updating score:', scoreUpdateError);
+        } else {
+            post.score = newScore;
+        }
       }
     } else {
-      // Upsert vote
-      const { error: upsertError } = await supabase.from('votes').upsert({
-        user_id: user.id,
-        post_id: post.id,
-        vote_type: voteType,
-      });
+      if (userVote === null) {
+        // Insert new vote
+        const { error: insertError } = await supabase.from('votes').insert({
+          user_id: user.id,
+          post_id: post.id,
+          vote_type: voteType,
+        });
 
-      if (upsertError) {
-        console.error('Error voting:', upsertError);
-      } else {
-        if (userVote === null) {
-          setScore((prev) => prev + (voteType === 'upvote' ? 1 : -1));
+        if (insertError) {
+          console.error('Error voting:', insertError);
         } else {
-          setScore((prev) => prev + (voteType === 'upvote' ? 2 : -2));
+          newScore = post.score + (voteType === 'upvote' ? 1 : -1);
+          setScore(() => newScore);
+
+          const {error: scoreUpdateError} = await supabase
+              .from('posts')
+              .update({score: newScore})
+              .eq('id', post.id);
+
+          if (scoreUpdateError) {
+            console.error('Error updating score:', scoreUpdateError);
+          } else {
+            post.score = newScore;
+          }
+
+          setUserVote(voteType);
         }
-        setUserVote(voteType);
+      } else {
+        // Update vote
+        const { error: updateError } = await supabase
+          .from('votes')
+          .update({ vote_type: voteType })
+          .eq('user_id', user.id)
+          .eq('post_id', post.id);
+
+        if (updateError) {
+            console.error('Error updating vote:', updateError);
+        } else {
+          newScore = post.score + (voteType === 'upvote' ? 2 : -2);
+          setScore(() => newScore);
+
+          const {error: scoreUpdateError} = await supabase
+              .from('posts')
+              .update({score: newScore})
+              .eq('id', post.id);
+
+          if (scoreUpdateError) {
+            console.error('Error updating score:', scoreUpdateError);
+          } else {
+            post.score = newScore;
+          }
+
+          setUserVote(voteType);
+        }
       }
     }
   };
