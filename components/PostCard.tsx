@@ -36,18 +36,9 @@ export default function PostCard({ post }) {
         setScore(totalScore);
       }
 
-      // Fetch post creator
-      const { data: postCreatorData, error: postCreatorError } = await supabase
-        .from('posts')
-        .select('profiles(username)')
-        .eq('is_anonymous', false)
-        .eq('id', post.id)
-        .maybeSingle();
-
-      if (postCreatorError) {
-        console.error('Error fetching post creator:', postCreatorError);
-      } else if (postCreatorData && postCreatorData.profiles.username) {
-        setPostCreator(postCreatorData.profiles.username);
+      // Set post creator
+      if (!post.is_anonymous && post.profiles.username) {
+        setPostCreator(post.profiles.username);
       }
 
       // Fetch user vote
