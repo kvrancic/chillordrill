@@ -25,8 +25,8 @@ export default function SignInForm() {
 
   return (
     <div className="w-11/12 p-12 px-6 py-10 rounded-lg sm:w-9/12 md:w-8/12 lg:w-7/12 2xl:w-5/12 sm:px-10 sm:py-6 shadow-2xl bg-white">
-      <h2 className="font-semibold text-4xl mb-4">Sign in</h2>
-      <p className="font-medium mb-4">Hi, Welcome back</p>
+      <h2 className="font-semibold text-4xl mb-4 text-gray-900">Sign in</h2>
+      <p className="font-medium mb-4 text-gray-900">Hi, Welcome back</p>
       <SignIn
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
@@ -38,7 +38,7 @@ export default function SignInForm() {
           Forgot Password?
         </Link>
       </div>
-      <div className="pt-4 text-center">
+      <div className="pt-4 text-center text-gray-900">
         Not registered yet?{" "}
         <Link href="/signup" className="underline text-blue-500">
           Create an account
