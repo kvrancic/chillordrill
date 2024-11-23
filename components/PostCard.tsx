@@ -164,51 +164,53 @@ export default function PostCard({ post }) {
   };
 
   return (
-    <div className="bg-darkblue p-4 rounded mb-4 ">
-      {/* Post Header */}
-      <div className="flex items-center mb-2">
-        <div className="flex items-center">
+      <div className="bg-darkblue p-4 rounded mb-4 ">
+        {/* Post Header */}
+        <div className="flex items-center mb-2">
+          <p className="text-sm text-gray-400 italic">
+            Posted by
+          </p>
+          <p className="ml-1 text-gray-400 italic font-bold">
+            {' '}
+            {post.is_anonymous ? 'Anonymous' : postCreator}
+          </p>
+
+        </div>
+        <div className="flex items-center float-right">
           <button
-            onClick={() => handleVote('upvote')}
-            className={`mr-2 ${
-              userVote === 'upvote'
-                ? 'text-green-500 border border-green-500'
-                : 'text-gray-400'
-            }`}
+              onClick={() => handleVote('upvote')}
+              className={`mr-2 ${
+                  userVote === 'upvote'
+                      ? 'text-green-500 border border-green-500'
+                      : 'text-gray-400'
+              }`}
           >
-            <AiOutlineUp size={20} />
+            <AiOutlineUp size={20}/>
           </button>
+          <p className="mr-2">{score}</p>
           <button
-            onClick={() => handleVote('downvote')}
-            className={`${
-              userVote === 'downvote'
-                ? 'text-red-500 border border-red-500'
-                : 'text-gray-400'
-            }`}
+              onClick={() => handleVote('downvote')}
+              className={`${
+                  userVote === 'downvote'
+                      ? 'text-red-500 border border-red-500'
+                      : 'text-gray-400'
+              }`}
           >
-            <AiOutlineDown size={20} />
+            <AiOutlineDown size={20}/>
           </button>
         </div>
-        <p className="ml-2">{score}</p>
-        <p className="ml-4 text-sm text-gray-400">
-          Posted by{' '}
-          {post.is_anonymous
-            ? 'Anonymous'
-            : postCreator}
-        </p>
+        {/* Post Content */}
+        <p className="mb-2">{post.content}</p>
+        {/* Comments Toggle */}
+        <button
+            onClick={() => setShowComments(!showComments)}
+            className="flex items-center text-blue-500 hover:underline"
+        >
+          <AiOutlineComment className="mr-1"/>
+          {showComments ? 'Hide Comments' : 'Show Comments'}
+        </button>
+        {/* Comments Section */}
+        {showComments && <CommentSection postId={post.id}/>}
       </div>
-      {/* Post Content */}
-      <p className="mb-2">{post.content}</p>
-      {/* Comments Toggle */}
-      <button
-        onClick={() => setShowComments(!showComments)}
-        className="flex items-center text-blue-500 hover:underline"
-      >
-        <AiOutlineComment className="mr-1" />
-        {showComments ? 'Hide Comments' : 'Show Comments'}
-      </button>
-      {/* Comments Section */}
-      {showComments && <CommentSection postId={post.id} />}
-    </div>
   );
 }
