@@ -12,6 +12,7 @@ export default function PostCard({ post }) {
   const [userVote, setUserVote] = useState(null);
   const [score, setScore] = useState(0);
   const [postCreator, setPostCreator] = useState("Unknown");
+  const [question, setQuestion] = useState('');
   const [showComments, setShowComments] = useState(false);
 
   // Fetch total score and user vote
@@ -37,6 +38,11 @@ export default function PostCard({ post }) {
       //   }, 0);
       //   setScore(totalScore);
       // }
+
+      // Set question
+      if (post.ai_questions && post.ai_questions.question_text) {
+        setQuestion(post.ai_questions.question_text);
+      }
 
       // Set post creator
       if (!post.is_anonymous && post.profiles.username) {
@@ -170,7 +176,7 @@ export default function PostCard({ post }) {
           <p className="text-sm text-gray-400 italic">
             Posted by
           </p>
-          <p className="ml-1 text-gray-400 italic font-bold">
+          <p className="ml-1 text-gray-400 italic font-medium">
             {' '}
             {post.is_anonymous ? 'Anonymous' : postCreator}
           </p>
@@ -200,6 +206,7 @@ export default function PostCard({ post }) {
           </button>
         </div>
         {/* Post Content */}
+        {question.length > 0 && <p className="font-bold mb-2">{question}</p>}
         <p className="mb-2">{post.content}</p>
         {/* Comments Toggle */}
         <button

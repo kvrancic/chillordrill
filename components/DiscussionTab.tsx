@@ -14,7 +14,7 @@ export default function DiscussionTab({ course }) {
     const fetchPosts = async () => {
       const { data, error } = await supabase
         .from('posts')
-        .select('*, profiles(full_name, username)')
+        .select('*, profiles(full_name, username), ai_questions(question_text)')
         .eq('course_id', course.id)
         .order('score', { ascending: false })
         .order('created_at', { ascending: false });
