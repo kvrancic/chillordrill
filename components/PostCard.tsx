@@ -11,6 +11,7 @@ export default function PostCard({ post }) {
   const supabase = createClient();
   const [userVote, setUserVote] = useState(null);
   const [score, setScore] = useState(0);
+  const [postCreator, setPostCreator] = useState("Unknown");
   const [showComments, setShowComments] = useState(false);
 
   // Fetch total score and user vote
@@ -33,6 +34,20 @@ export default function PostCard({ post }) {
           return acc + (vote.vote_type === 'upvote' ? 1 : -1);
         }, 0);
         setScore(totalScore);
+      }
+
+      // Fetch post creator
+      const { data: postCreatorData, error: postCreatorError } = await supabase
+        .from('posts')
+        .select('profiles(username)')
+        .eq('is_anonymous', false)
+        .eq('id', post.id)
+        .maybeSingle();
+
+      if (postCreatorError) {
+        console.error('Error fetching post creator:', postCreatorError);
+      } else if (postCreatorData && postCreatorData.profiles.username) {
+        setPostCreator(postCreatorData.profiles.username);
       }
 
       // Fetch user vote
@@ -133,7 +148,7 @@ export default function PostCard({ post }) {
           Posted by{' '}
           {post.is_anonymous
             ? 'Anonymous'
-            : post.profiles?.full_name || 'Unknown'}
+            : postCreator}
         </p>
       </div>
       {/* Post Content */}
