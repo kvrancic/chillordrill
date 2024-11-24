@@ -11,7 +11,6 @@ export default function PostCard({ post }) {
   const supabase = createClient();
   const [userVote, setUserVote] = useState(null);
   const [score, setScore] = useState(0);
-  // const [postCreator, setPostCreator] = useState("Unknown");
   const [question, setQuestion] = useState('');
   const [showComments, setShowComments] = useState(false);
 
@@ -43,11 +42,6 @@ export default function PostCard({ post }) {
       if (post.ai_questions && post.ai_questions.question_text) {
         setQuestion(post.ai_questions.question_text);
       }
-
-      // Set post creator
-      // if (!post.is_anonymous && post.profiles.username) {
-      //   setPostCreator(post.profiles.username);
-      // }
 
       // Fetch user vote
       if (user) {
@@ -177,7 +171,7 @@ export default function PostCard({ post }) {
             Post by
           </p>
           <p className="ml-1 text-gray-400 font-medium">
-            {post.is_anonymous ? 'Anonymous' : "Me"}
+            {post.is_anonymous ? 'Anonymous' : post.profiles.username ? post.profiles.username : 'Unknown'}
           </p>
 
         </div>
