@@ -174,7 +174,7 @@ export default function PostCard({ post }) {
         {/* Post Header */}
         <div className="flex items-center mb-2">
           <p className="text-sm text-gray-400 italic">
-            Posted by
+            Post by
           </p>
           <p className="ml-1 text-gray-400 font-medium">
             {post.is_anonymous ? 'Anonymous' : postCreator}
