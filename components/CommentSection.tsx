@@ -56,7 +56,7 @@ export default function CommentSection({ postId }) {
       const commentsWithScores = commentsData.map((comment) => ({
         ...comment,
         score: commentScores[comment.id] || 0,
-        commentator: comment.is_anonymous ? 'Anonymous' : comment.profiles.username ? comment.profiles.username : "Unknown",
+        commentator: comment.is_anonymous ? 'Anonymous' : comment.profiles.username ? comment.profiles.username : 'Unknown',
       }));
 
       setComments(commentsWithScores);
