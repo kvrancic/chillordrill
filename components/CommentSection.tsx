@@ -199,7 +199,7 @@ export default function CommentSection({ postId }) {
         content: newComment,
         is_anonymous: isAnonymous,
       })
-      .select('*, profiles(full_name)');
+      .select('*, profiles(full_name, username)');
 
     if (error) {
       console.error('Error submitting comment:', error);
