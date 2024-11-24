@@ -140,12 +140,14 @@ export default function CommentSection({ postId }) {
         } else {
             setUserVotes((prev) => ({ ...prev, [commentId]: voteType }));
             setComments((prev) =>
-                prev.map((comment) => {
-                    if (comment.id === commentId) {
-                        return { ...comment, score: comment.score + (voteType === 'upvote' ? 1 : -1) };
-                    }
-                    return comment;
-                })
+                prev.map((comment) =>
+                    comment.id === commentId
+                    ? {
+                        ...comment,
+                        score: comment.score + (voteType === 'upvote' ? 1 : -1)
+                      }
+                    : comment
+                )
             );
         }
 
@@ -162,15 +164,14 @@ export default function CommentSection({ postId }) {
       } else {
         setUserVotes((prev) => ({ ...prev, [commentId]: voteType }));
         setComments((prev) =>
-          prev.map((comment) => {
-            if (comment.id === commentId) {
-                return {
+           prev.map((comment) =>
+                comment.id === commentId
+                ? {
                     ...comment,
-                    score: comment.score + (voteType === 'upvote' ? 2 : -2),
-                };
-            }
-            return comment;
-          })
+                    score: comment.score + (voteType === 'upvote' ? 2 : -2)
+                  }
+                : comment
+           )
         );
       }
     }
