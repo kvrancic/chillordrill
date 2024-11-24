@@ -207,7 +207,11 @@ export default function CommentSection({ postId }) {
       alert('Error submitting comment.');
     } else if (data && data.length > 0) {
       // Initialize score to 0
-      const newCommentData = { ...data[0], score: 0 };
+      const newCommentData = {
+          ...data[0],
+          score: 0,
+          commentator: isAnonymous ? 'Anonymous' : data[0].profiles.username ? data[0].profiles.username : "Unknown"
+      };
       setComments((prev) => [newCommentData, ...prev]);
       setNewComment('');
       setIsAnonymous(false);
