@@ -171,7 +171,7 @@ export default function PostCard({ post }) {
             Post by
           </p>
           <p className="ml-1 text-gray-400 font-medium">
-            {post.is_anonymous ? 'Anonymous' : post.profiles.username ? post.profiles.username : 'Unknown'}
+            {post.is_anonymous ? 'Anonymous' : post.profiles?.username || 'Unknown'}
           </p>
 
         </div>
