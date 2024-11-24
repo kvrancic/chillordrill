@@ -20,7 +20,7 @@ export default function CommentSection({ postId }) {
       // Fetch comments
       const { data: commentsData, error: commentsError } = await supabase
         .from('comments')
-        .select('*, profiles(full_name)')
+        .select('*, profiles(full_name, username)')
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
@@ -56,6 +56,7 @@ export default function CommentSection({ postId }) {
       const commentsWithScores = commentsData.map((comment) => ({
         ...comment,
         score: commentScores[comment.id] || 0,
+        commentator: comment.is_anonymous ? 'Anonymous' : comment.profiles.username ? comment.profiles.username : "Unknown",
       }));
 
       setComments(commentsWithScores);
@@ -226,39 +227,41 @@ export default function CommentSection({ postId }) {
       </div>
       {/* Comments List */}
       {comments.map((comment) => (
-        <div key={comment.id} className="bg-darkblue p-2 rounded mb-2">
-          <div className="flex items-center mb-1">
-            <button
-              onClick={() => handleVote(comment.id, 'upvote')}
-              className={`mr-2 ${
-                userVotes[comment.id] === 'upvote'
-                  ? 'text-green-500 border border-green-500'
-                  : 'text-gray-400'
-              }`}
-            >
-              <AiOutlineUp size={16} />
-            </button>
-            <button
-              onClick={() => handleVote(comment.id, 'downvote')}
-              className={`mr-2 ${
-                userVotes[comment.id] === 'downvote'
-                  ? 'text-red-500 border border-red-500'
-                  : 'text-gray-400'
-              }`}
-            >
-              <AiOutlineDown size={16} />
-            </button>
-            <p className="text-sm">{comment.score || 0}</p>
-            <p className="ml-4 text-sm text-gray-400">
-              Comment by{' '}
-              {comment.is_anonymous
-                ? 'Anonymous'
-                : comment.profiles?.full_name || 'Unknown'}
-            </p>
+          <div key={comment.id} className="bg-darkblue p-2 rounded mb-2">
+            <div className="flex items-center mb-2">
+                <p className="text-sm text-gray-400 italic">
+                  Comment by
+                </p>
+                <p className="ml-1 text-sm text-gray-400">
+                  {comment.commentator}
+                </p>
+            </div>
+              <div className="flex items-center mb-1 float-right">
+                <button
+                    onClick={() => handleVote(comment.id, 'upvote')}
+                    className={`mr-2 ${
+                        userVotes[comment.id] === 'upvote'
+                            ? 'text-green-500 border border-green-500'
+                            : 'text-gray-400'
+                    }`}
+                >
+                  <AiOutlineUp size={10}/>
+                </button>
+                <p className="text-sm mr-2">{comment.score || 0}</p>
+                <button
+                    onClick={() => handleVote(comment.id, 'downvote')}
+                    className={`mr-2 ${
+                        userVotes[comment.id] === 'downvote'
+                            ? 'text-red-500 border border-red-500'
+                            : 'text-gray-400'
+                    }`}
+                >
+                  <AiOutlineDown size={10}/>
+                </button>
+              </div>
+              <p>{comment.content}</p>
+            </div>
+            ))}
           </div>
-          <p>{comment.content}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
+      );
+      }

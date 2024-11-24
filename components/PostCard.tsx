@@ -176,8 +176,7 @@ export default function PostCard({ post }) {
           <p className="text-sm text-gray-400 italic">
             Posted by
           </p>
-          <p className="ml-1 text-gray-400 italic font-medium">
-            {' '}
+          <p className="ml-1 text-gray-400 font-medium">
             {post.is_anonymous ? 'Anonymous' : postCreator}
           </p>
 
