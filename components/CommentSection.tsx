@@ -115,7 +115,7 @@ export default function CommentSection({ postId }) {
         .eq('comment_id', commentId);
 
       if (deleteError) {
-        console.error('Error removing vote:', deleteError);
+        console.error('Error removing vote from comment:', deleteError);
       } else {
         setUserVotes((prev) => ({ ...prev, [commentId]: null }));
         setComments((prev) =>
@@ -129,30 +129,45 @@ export default function CommentSection({ postId }) {
           )
         );
       }
-    } else {
-      // Upsert vote
-      const { error: upsertError } = await supabase.from('votes').upsert({
-        user_id: user.id,
-        comment_id: commentId,
-        vote_type: voteType,
-      });
+    } else if (currentVote === null || currentVote === undefined) {
+      // Insert vote
+        const { error: insertError } = await supabase.from('votes').insert([
+            { user_id: user.id, comment_id: commentId, vote_type: voteType },
+        ]);
 
-      if (upsertError) {
-        console.error('Error voting:', upsertError);
+        if (insertError) {
+            console.error('Error inserting vote for comment:', insertError);
+        } else {
+            setUserVotes((prev) => ({ ...prev, [commentId]: voteType }));
+            setComments((prev) =>
+                prev.map((comment) => {
+                    if (comment.id === commentId) {
+                        return { ...comment, score: comment.score + (voteType === 'upvote' ? 1 : -1) };
+                    }
+                    return comment;
+                })
+            );
+        }
+
+    } else {
+      // Update vote
+      const { error: updateError } = await supabase.from('votes')
+        .update({ vote_type: voteType })
+        .eq('user_id', user.id)
+        .eq('comment_id', commentId);
+
+
+      if (updateError) {
+        console.error('Error updating vote for comment:', updateError);
       } else {
         setUserVotes((prev) => ({ ...prev, [commentId]: voteType }));
         setComments((prev) =>
           prev.map((comment) => {
             if (comment.id === commentId) {
-              let delta = 0;
-              if (currentVote === null || currentVote === undefined) {
-                delta = voteType === 'upvote' ? 1 : -1;
-              } else if (currentVote === 'upvote' && voteType === 'downvote') {
-                delta = -2;
-              } else if (currentVote === 'downvote' && voteType === 'upvote') {
-                delta = 2;
-              }
-              return { ...comment, score: comment.score + delta };
+                return {
+                    ...comment,
+                    score: comment.score + (voteType === 'upvote' ? 2 : -2),
+                };
             }
             return comment;
           })
