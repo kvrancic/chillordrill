@@ -16,9 +16,15 @@ export default function Layout({
 
   useEffect(() => {
     const logPageView = async () => {
+      if (!sessionStorage.getItem('sessionId')) {
+        const sessionId = `session_${Date.now()}`;
+        sessionStorage.setItem('sessionId', sessionId);
+      }
+      const sessionId = sessionStorage.getItem('sessionId');
+
       const { data: { user } } = await supabase.auth.getUser();
       const userId = user ? user.id : '00000000-0000-0000-0000-000000000000';
-      logEvent(userId, pathname);
+      logEvent(userId, sessionId, pathname, 'PAGE_VIEWED');
     };
 
     // Log the initial page view
