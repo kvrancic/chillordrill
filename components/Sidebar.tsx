@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@/utils/supabase/client'
+import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
-import { FiMenu } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
 
 interface Course {
   id: string;
@@ -11,12 +11,15 @@ interface Course {
   name: string;
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  closeSidebar: () => void;
+}
+
+export default function Sidebar({ closeSidebar }: SidebarProps) {
   const supabase = createClient();
   const [interestedCourses, setInterestedCourses] = useState<Course[]>([]);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Fetch interested courses
   useEffect(() => {
@@ -32,8 +35,6 @@ export default function Sidebar() {
           return;
         }
 
-        console.log('Logged-in user ID:', user?.id);
-
         if (!user) {
           console.error('No user is logged in.');
           return;
@@ -48,11 +49,8 @@ export default function Sidebar() {
         if (error) {
           console.error('Error fetching interested courses:', error);
         } else if (data) {
-          console.log('Fetched interested courses:', data);
-
-          // Extract the `courses` field properly
           const courses = data.map((item) => item.courses);
-          // @ts-expect-error - data is possibly null
+          // @ts-expect-error courses is an array of objects
           setInterestedCourses(courses);
         }
       } catch (err) {
@@ -88,23 +86,19 @@ export default function Sidebar() {
   }, [searchValue, supabase]);
 
   return (
-    <div className='bg-gray-900 h-full pt-10'>
-      {/* Mobile Toggle Button */}
-      <div className="md:hidden p-4">
+    <div className="fixed inset-0 z-50 md:static md:z-auto md:w-64 bg-gray-900 h-full pt-10">
+      {/* Close Button for Mobile */}
+      <div className="md:hidden p-4 flex justify-end">
         <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={closeSidebar}
           className="text-gray-500 focus:outline-none"
         >
-          <FiMenu size={24} />
+          <FiX size={24} />
         </button>
       </div>
 
-      {/* Sidebar */}
-      <div
-        className={`bg-darkblue text-white w-64 p-4 flex-shrink-0 md:block ${
-          isMobileMenuOpen ? 'block' : 'hidden'
-        }`}
-      >
+      {/* Sidebar Content */}
+      <div className="bg-darkblue text-white w-full p-4 flex-shrink-0 h-full overflow-y-auto">
         {/* Interested Courses */}
         <div className="mb-6 min-h-1/2">
           <h2 className="text-xl font-bold mb-2">Course Watchlist</h2>
@@ -112,8 +106,9 @@ export default function Sidebar() {
             {interestedCourses.map((course) => (
               <Link
                 key={course.id}
-                href={`/${course.code}`}
+                href={`/course/${course.code}`}
                 className="block hover:underline"
+                onClick={closeSidebar}
               >
                 {course.code} - {course.name}
               </Link>
@@ -122,7 +117,7 @@ export default function Sidebar() {
         </div>
 
         {/* All Courses */}
-        <div className='h-1/2'>
+        <div className="h-1/2">
           <h2 className="text-xl font-bold mb-2">All Courses</h2>
           <input
             type="text"
@@ -137,6 +132,7 @@ export default function Sidebar() {
                 key={course.id}
                 href={`/${course.code}`}
                 className="block hover:underline"
+                onClick={closeSidebar}
               >
                 {course.code} - {course.name}
               </Link>

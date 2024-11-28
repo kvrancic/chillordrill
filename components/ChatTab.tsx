@@ -116,7 +116,7 @@ export default function ChatTab({ course }) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full px-8 py-4 bg-gray-900 overflow-auto rounded-lg max-h-[62vh]">
       {/* Messages */}
       <div className="flex-1 overflow-y-auto mb-4">
         {messages.map((message) => (
