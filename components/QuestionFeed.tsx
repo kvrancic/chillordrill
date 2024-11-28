@@ -3,13 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client'
 import QuestionCard from './QuestionCard';
-
-interface Question {
-  id: string;
-  course_id: string;
-  question_text: string;
-  created_at: string;
-}
+import { Question } from './QuestionCard';
 
 export default function QuestionFeed() {
   const supabase = createClient();
@@ -51,7 +45,7 @@ export default function QuestionFeed() {
         // Fetch AI questions
         const { data: questionsData, error: questionsError } = await supabase
           .from('ai_questions')
-          .select('*')
+          .select('*, courses(code, name)')
           .in('course_id', courseIds)
           .eq('is_active', true);
 
@@ -62,6 +56,11 @@ export default function QuestionFeed() {
           const visible = questionsData.filter(
             (q) => !hiddenQuestionIds.includes(q.id)
           );
+          visible.forEach((q) => {
+            q.course_code = q.courses.code;
+            q.course_name = q.courses.name;
+          })
+          console.log(visible[0]);
           setQuestions(visible);
           setVisibleQuestions(visible.slice(0, loadCount));
         }

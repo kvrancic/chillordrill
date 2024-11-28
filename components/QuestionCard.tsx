@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { createClient } from '@/utils/supabase/client'
 
-interface Question {
+export interface Question {
   id: string;
   course_id: string;
+  course_code: string;
+  course_name: string;
   question_text: string;
   created_at: string;
 }
@@ -67,6 +69,7 @@ export default function QuestionCard({ question, hideQuestion }: QuestionCardPro
       >
         <AiOutlineClose size={20} />
       </button>
+      <h3 className="text-lg font-semibold">{question.course_code} - {question.course_name}</h3>
       <p className="text-white mb-2">{question.question_text}</p>
       {!showAnswerForm ? (
         <button
