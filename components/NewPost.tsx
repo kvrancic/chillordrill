@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@/utils/supabase/client'
+import { createClient } from '@/utils/supabase/client';
 import { Switch } from '@mantine/core';
 
 interface Course {
@@ -15,7 +15,6 @@ export default function NewPost() {
   const [content, setContent] = useState('');
   const [selectedCourseId, setSelectedCourseId] = useState('');
   const [courses, setCourses] = useState<Course[]>([]);
-  const [searchValue, setSearchValue] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
 
   // Fetch courses the user is taking or has taken
@@ -35,7 +34,7 @@ export default function NewPost() {
         if (error) {
           console.error('Error fetching user courses:', error);
         } else if (data) {
-        // @ts-expect-error - data is possibly null
+          // @ts-expect-error data is possibly null
           setCourses(data.map((item) => item.course));
         }
       }
@@ -44,20 +43,18 @@ export default function NewPost() {
     fetchUserCourses();
   }, [supabase]);
 
-  // Handle post submission
   const handleSubmit = async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) {
-      // Handle not logged in
+      alert('You must be logged in to post.');
       return;
     }
 
     if (!content || !selectedCourseId) {
-      // Handle missing content or course
-      alert('Please enter content and select a course.');
+      alert('Please fill in both the post content and course.');
       return;
     }
 
@@ -72,7 +69,6 @@ export default function NewPost() {
       console.error('Error creating post:', error);
       alert('Error creating post.');
     } else {
-      // Clear the form
       setContent('');
       setSelectedCourseId('');
       setIsAnonymous(false);
@@ -81,7 +77,7 @@ export default function NewPost() {
   };
 
   return (
-    <div className="bg-darkblue p-4 rounded-lg mb-4 bg-gray-900">
+    <div className="bg-darkblue p-4 rounded-lg mb-4 w-full mx-auto">
       <h2 className="text-xl font-bold text-white mb-2">Create a New Post</h2>
       <textarea
         className="w-full p-2 bg-black text-white border border-gray-600 rounded mb-2"
@@ -89,36 +85,36 @@ export default function NewPost() {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       ></textarea>
-      <div className="flex mb-2 justify-between">
-        <div className='flex items-center'>
-        <label className="text-white mr-2">Course:</label>
-        <select
-          className="p-2 bg-black text-white border border-gray-600 rounded"
-          value={selectedCourseId}
-          onChange={(e) => setSelectedCourseId(e.target.value)}
-        >
-          <option value="">Select a course...</option>
-          {courses.map((course) => (
-            <option key={course.id} value={course.id}>
-              {course.code} - {course.name}
-            </option>
-          ))}
-        </select>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <label className="text-white">Course:</label>
+          <select
+            className="w-full sm:w-auto p-2 bg-black text-white border border-gray-600 rounded"
+            value={selectedCourseId}
+            onChange={(e) => setSelectedCourseId(e.target.value)}
+          >
+            <option value="">Select a course...</option>
+            {courses.map((course) => (
+              <option key={course.id} value={course.id}>
+                {course.code} - {course.name}
+              </option>
+            ))}
+          </select>
         </div>
-      <div className='flex items-center gap-6 flex-end'>
-        <Switch
-                checked={isAnonymous}
-                onChange={(event) => setIsAnonymous(event.currentTarget.checked)}
-                label="anonymous"
-                color="green"
-            />
-        <button
+        <div className="flex items-center gap-4">
+          <Switch
+            checked={isAnonymous}
+            onChange={(event) => setIsAnonymous(event.currentTarget.checked)}
+            label="Anonymous"
+            color="green"
+          />
+          <button
             onClick={handleSubmit}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-        >
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full sm:w-auto"
+          >
             Post
-        </button>
-      </div>
+          </button>
+        </div>
       </div>
     </div>
   );

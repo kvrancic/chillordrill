@@ -130,7 +130,7 @@ export default function Sidebar({ closeSidebar }: SidebarProps) {
             {allCourses.map((course) => (
               <Link
                 key={course.id}
-                href={`/${course.code}`}
+                href={`/course/${course.code}`}
                 className="block hover:underline"
                 onClick={closeSidebar}
               >

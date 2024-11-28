@@ -52,7 +52,7 @@ export default function Navbar({ onSidebarToggle }: NavbarProps) {
 
         {/* Logo */}
         <div className="flex-1 flex items-center mr-24 justify-center">
-          <img src="/logo.png" alt="Logo" className="h-[80px]" />
+          <img src="/logo.png" alt="Logo" className="h-[80px] w-[300px]" />
         </div>
 
         {/* Right Side */}
