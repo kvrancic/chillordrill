@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { createClient } from '@/utils/supabase/client'
+import {Switch} from "@mantine/core";
 
 export interface Question {
   id: string;
@@ -86,30 +87,26 @@ export default function QuestionCard({ question, hideQuestion }: QuestionCardPro
             value={answerContent}
             onChange={(e) => setAnswerContent(e.target.value)}
           ></textarea>
-          <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id={`anonymous-${question.id}`}
-              checked={isAnonymous}
-              onChange={(e) => setIsAnonymous(e.target.checked)}
-              className="mr-2"
+            <button
+              onClick={handleAnswerSubmit}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded mr-2 mb-2"
+            >
+              Submit
+            </button>
+            <button
+              onClick={() => setShowAnswerForm(false)}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
+            >
+              Cancel
+            </button>
+            <Switch
+                checked={isAnonymous}
+                onChange={(e) => setIsAnonymous(e.target.checked)}
+                label="Answer anonymously"
+                id={`anonymous-${question.id}`}
+                color="green"
+                className="float-right"
             />
-            <label htmlFor={`anonymous-${question.id}`} className="text-white">
-              Answer anonymously
-            </label>
-          </div>
-          <button
-            onClick={handleAnswerSubmit}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded mr-2"
-          >
-            Submit
-          </button>
-          <button
-            onClick={() => setShowAnswerForm(false)}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
-          >
-            Cancel
-          </button>
         </div>
       )}
     </div>
