@@ -1,4 +1,5 @@
 import os
+import re
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -18,16 +19,19 @@ driver = webdriver.Chrome(service=service, options=chrome_options)
 courses = pd.DataFrame(columns=["code", "name", "ects", "link", "professor", "description"])
 course_codes = set()
 
-level = "bachelor"
-driver.get(f"https://edu.epfl.ch/studyplan/en/{level}/")
+MAIN_SCRAPPING = True
+if MAIN_SCRAPPING:
+    level = "doctoral_school"
+    driver.get(f"https://edu.epfl.ch/studyplan/en/{level}/")
 
-sections = driver.find_element(By.ID, "main").find_elements(By.TAG_NAME, "a")
-section_links = []
+    sections = driver.find_element(By.ID, "main").find_elements(By.TAG_NAME, "a")
+    section_links = []
 
-for section in sections:
-    section_links.append(section.get_attribute("href"))
+    for section in sections:
+        section_links.append(section.get_attribute("href"))
 
 
+# section_links = ["https://edu.epfl.ch/studyplan/en/propedeutics/architecture/"]
 # Iterate over all the sections and collect all the courses
 course_links = []
 for link in tqdm(section_links, desc="Extracting course links"):
@@ -64,7 +68,7 @@ for link in tqdm(course_links, desc="Extracting course information"):
         if new_course["code"] in course_codes:
             continue
 
-        new_course["ects"] = paragraphs[0].text.split("/")[1].split()[0].strip()
+        new_course["ects"] = re.findall(r'\d+', paragraphs[0].text.split("/")[1])[0]
 
         professors = paragraphs[1].find_elements(By.TAG_NAME, "a")
         new_course["professor"] = ""
@@ -83,6 +87,7 @@ for link in tqdm(course_links, desc="Extracting course information"):
 
     courses.loc[len(courses)] = new_course
 
-courses.to_csv(f"data/courses_{level}.csv", index=False)
+suffix = level
+courses.to_csv(f"data/courses_{suffix}.csv", index=False)
 
 driver.quit()
