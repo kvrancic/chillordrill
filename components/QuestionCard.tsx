@@ -69,7 +69,7 @@ export default function QuestionCard({ question, hideQuestion }: QuestionCardPro
       >
         <AiOutlineClose size={20} />
       </button>
-      <h3 className="text-lg font-semibold">{question.course_code} - {question.course_name}</h3>
+      <h3 className="text-gray-400 font-semibold">{question.course_code} - {question.course_name}</h3>
       <p className="text-white mb-2">{question.question_text}</p>
       {!showAnswerForm ? (
         <button
