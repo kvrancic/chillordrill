@@ -80,7 +80,12 @@ for link in tqdm(course_links, desc="Extracting course information"):
 
         new_course["link"] = link
 
-        new_course["description"] = course_details.find_element(By.CLASS_NAME, "mt-5").find_element(By.TAG_NAME, "p").text
+        summary_candidates =  course_details.find_elements(By.CLASS_NAME, "mt-5")
+        for candidate in summary_candidates:
+            h2 = candidate.find_element(By.TAG_NAME, "h2")
+            if h2.text == "Summary" or h2.text == "Résumé":
+                new_course["description"] = candidate.find_element(By.TAG_NAME, "p").text
+                break
     except:
         # print(f"WARNING: Could not extract course information from link:\n{link}\n\n")
         continue
