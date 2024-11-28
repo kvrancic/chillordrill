@@ -1,13 +1,15 @@
+// ProgressBar.tsx
 'use client';
 
 import React from 'react';
 
 interface ProgressBarProps {
   step: number;
+  totalSteps: number;
 }
 
-export default function ProgressBar({ step }: ProgressBarProps) {
-  const steps = [1, 2, 3];
+export default function ProgressBar({ step, totalSteps }: ProgressBarProps) {
+  const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
   return (
     <div className="flex items-center mb-6">
       {steps.map((s, index) => (
@@ -15,11 +17,17 @@ export default function ProgressBar({ step }: ProgressBarProps) {
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center ${
               step >= s ? 'bg-green-500' : 'bg-gray-500'
-            } text-white`}
+            } text-white font-bold`}
           >
             {s}
           </div>
-          {index < steps.length - 1 && <div className="w-8 h-1 bg-gray-500 mx-2"></div>}
+          {index < steps.length - 1 && (
+            <div
+              className={`w-8 h-1 ${
+                step > s ? 'bg-green-500' : 'bg-gray-500'
+              } mx-2`}
+            ></div>
+          )}
         </div>
       ))}
     </div>
