@@ -14,7 +14,7 @@ export default async function SignupPage() {
 
   return (
     <div className="flex h-screen w-full"> 
-      <div className="flex justify-center items-center w-full xl:w-1/2 p-6">
+      <div className="hidden xl:flex justify-center items-center w-1/2 p-6">
         <LogoMotto />
       </div>
       <div className="flex justify-center items-center w-full xl:w-1/2 p-6">
