@@ -2,11 +2,10 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI, OpenAIError
 
-def get_client() -> OpenAI:
-    api_key = os.getenv("OPENAI_API_KEY")
 
-    if api_key is None or api_key == "":
-        load_dotenv(override=True)
+def get_client() -> OpenAI:
+    api_key = None
+    if load_dotenv():
         api_key = os.getenv("OPENAI_API_KEY")
 
     if api_key is None or api_key == "":
@@ -20,12 +19,19 @@ def get_client() -> OpenAI:
     )
     return client
 
-def get_prompt(question: str, reviews: list[tuple[str, str]], course_name: str) -> str:
+
+def get_prompt(question: str, reviews: list[tuple[str, str]], course_name: str, course_description: str) -> str:
     file_path = os.path.join(os.path.dirname(__file__), "prompt.txt")
 
     with open(file_path, "r") as file:
         prompt = file.read()
     prompt = prompt.replace("{course_name}", course_name)
+
+    if course_description != "":
+        prompt = prompt.replace("{course_description}", course_description)
+    else:
+        prompt = prompt.replace("{course_description}", "")
+
     prompt = prompt.replace("{question}", question)
     formatted_reviews = []
     for review in reviews:
@@ -36,6 +42,7 @@ def get_prompt(question: str, reviews: list[tuple[str, str]], course_name: str) 
     formatted_reviews = "\n".join(formatted_reviews)
     prompt = prompt.replace("{reviews}", formatted_reviews)
     return prompt
+
 
 def generate_model_response(client: OpenAI, prompt: str) -> str:
     try:
@@ -53,8 +60,9 @@ def generate_model_response(client: OpenAI, prompt: str) -> str:
         return response.choices[0].message.content.strip()
     except OpenAIError as e:
         return f"An error occurred while processing the reviews: {str(e)}"
-    
-def generate_answer(question: str, reviews: list[tuple[str, str]], course_name: str) -> str:
+
+
+def generate_answer(question: str, reviews: list[tuple[str, str]], course_name: str, course_description: str) -> str:
     """
     Generate an answer to a question based on the reviews of a course.
         question: The question to answer.
@@ -64,5 +72,5 @@ def generate_answer(question: str, reviews: list[tuple[str, str]], course_name: 
         course_name: The name of the course.
     """
     client = get_client()
-    prompt = get_prompt(question, reviews, course_name)
+    prompt = get_prompt(question, reviews, course_name, course_description)
     return generate_model_response(client, prompt)

@@ -8,6 +8,7 @@ Ensure the response is compact, dense, and includes all key details from the rev
 ---
 
 **Course Name:** {course_name}
+{course_description}
 **Student Question:** {question}
 
 **Course Reviews:**

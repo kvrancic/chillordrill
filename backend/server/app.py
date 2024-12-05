@@ -138,6 +138,9 @@ async def ai_interaction(interaction: Interaction):
         raise HTTPException(status_code=404, detail=f"Course with the code {interaction.course_code} not found")
 
     course_id = course["id"]
+    course_description = course["description"]
+    if course_description is None:
+        course_description = ""
 
     posts = get_posts_by_course_id(supabase, course_id)
 
@@ -151,7 +154,7 @@ async def ai_interaction(interaction: Interaction):
         else:
             reviews.append(("", post["content"]))
 
-    answer = generate_answer(interaction.question, reviews, course["name"])
+    answer = generate_answer(interaction.question, reviews, course["name"], course_description)
 
     # save_interaction(supabase, interaction.user_id, course_id, interaction.question, answer)
 
